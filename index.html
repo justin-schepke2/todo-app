@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="A simple to-do list that saves your tasks in your browser." />
+  <meta name="description" content="A simple to-do list. Create an account and your tasks are saved online." />
   <title>To-Do List</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%232563eb'/><path d='M28 52l15 15 30-32' stroke='white' stroke-width='10' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>" />
   <link rel="stylesheet" href="style.css" />
@@ -12,35 +12,69 @@
   <main class="app">
     <h1>My To-Do List</h1>
 
-    <!-- Form for adding a new task -->
-    <form id="task-form" class="task-form">
-      <input
-        id="task-input"
-        type="text"
-        placeholder="What needs to be done?"
-        autocomplete="off"
-        aria-label="New task"
-      />
-      <button type="submit" class="btn btn-primary">Add</button>
-    </form>
+    <!-- Shown when Supabase settings are missing -->
+    <p id="setup-message" class="notice notice-error" hidden>
+      This app isn't connected to Supabase yet. Add your project URL and anon key
+      (see config.example.js), then reload the page.
+    </p>
 
-    <!-- Filter buttons -->
-    <div class="filters" role="group" aria-label="Filter tasks">
-      <button class="filter-btn active" data-filter="all">All</button>
-      <button class="filter-btn" data-filter="active">Active</button>
-      <button class="filter-btn" data-filter="completed">Completed</button>
-    </div>
+    <!-- Shown when nobody is logged in -->
+    <section id="auth-section" hidden>
+      <form id="auth-form" class="auth-form">
+        <h2>Log in or create an account</h2>
+        <input id="email-input" type="email" placeholder="Email" autocomplete="email" required aria-label="Email" />
+        <input id="password-input" type="password" placeholder="Password (at least 6 characters)" autocomplete="current-password" minlength="6" required aria-label="Password" />
+        <div class="auth-buttons">
+          <button type="submit" class="btn btn-primary" data-mode="login">Log in</button>
+          <button type="submit" class="btn btn-secondary" data-mode="signup">Create account</button>
+        </div>
+      </form>
+    </section>
 
-    <!-- The list of tasks is drawn here by script.js -->
-    <ul id="task-list" class="task-list"></ul>
+    <!-- Shown when a user is logged in -->
+    <section id="todo-section" hidden>
+      <div class="user-bar">
+        <span>Signed in as <strong id="user-email"></strong></span>
+        <button id="logout-btn" class="link-btn">Log out</button>
+      </div>
 
-    <p id="empty-message" class="empty-message">No tasks here yet.</p>
+      <!-- Form for adding a new task -->
+      <form id="task-form" class="task-form">
+        <input
+          id="task-input"
+          type="text"
+          placeholder="What needs to be done?"
+          autocomplete="off"
+          maxlength="500"
+          aria-label="New task"
+        />
+        <button type="submit" class="btn btn-primary">Add</button>
+      </form>
 
-    <footer class="footer">
-      <span id="task-count">0 tasks left</span>
-    </footer>
+      <!-- Filter buttons -->
+      <div class="filters" role="group" aria-label="Filter tasks">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="active">Active</button>
+        <button class="filter-btn" data-filter="completed">Completed</button>
+      </div>
+
+      <!-- The list of tasks is drawn here by script.js -->
+      <ul id="task-list" class="task-list"></ul>
+
+      <p id="empty-message" class="empty-message">No tasks here yet.</p>
+
+      <footer class="footer">
+        <span id="task-count">0 tasks left</span>
+      </footer>
+    </section>
+
+    <!-- Success and error messages appear here -->
+    <p id="message" class="notice" hidden></p>
   </main>
 
+  <!-- Supabase library, then your Supabase settings, then the app -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+  <script src="config.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
